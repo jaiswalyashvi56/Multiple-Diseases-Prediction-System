@@ -80,24 +80,57 @@ elif selected == "Heart Disease":
 
 # ---------------- PARKINSON ----------------
 elif selected == "Parkinsons":
-    st.title("Parkinsons Disease Prediction")
 
-    fo = st.text_input("MDVP:Fo(Hz)")
-    fhi = st.text_input("MDVP:Fhi(Hz)")
-    flo = st.text_input("MDVP:Flo(Hz)")
-    jitter = st.text_input("MDVP:Jitter(%)")
-    shimmer = st.text_input("MDVP:Shimmer")
+    st.title("Parkinson's Disease Prediction")
+
+    fo = st.number_input("MDVP:Fo(Hz)", format="%.6f")
+    fhi = st.number_input("MDVP:Fhi(Hz)", format="%.6f")
+    flo = st.number_input("MDVP:Flo(Hz)", format="%.6f")
+    jitter_percent = st.number_input("MDVP:Jitter(%)", format="%.6f")
+    jitter_abs = st.number_input("MDVP:Jitter(Abs)", format="%.8f")
+    rap = st.number_input("MDVP:RAP", format="%.6f")
+    ppq = st.number_input("MDVP:PPQ", format="%.6f")
+    ddp = st.number_input("Jitter:DDP", format="%.6f")
+    shimmer = st.number_input("MDVP:Shimmer", format="%.6f")
+    shimmer_db = st.number_input("MDVP:Shimmer(dB)", format="%.6f")
+    apq3 = st.number_input("Shimmer:APQ3", format="%.6f")
+    apq5 = st.number_input("Shimmer:APQ5", format="%.6f")
+    apq = st.number_input("MDVP:APQ", format="%.6f")
+    dda = st.number_input("Shimmer:DDA", format="%.6f")
+    nhr = st.number_input("NHR", format="%.6f")
+    hnr = st.number_input("HNR", format="%.6f")
+    rpde = st.number_input("RPDE", format="%.6f")
+    dfa = st.number_input("DFA", format="%.6f")
+    spread1 = st.number_input("spread1", format="%.6f")
+    spread2 = st.number_input("spread2", format="%.6f")
+    d2 = st.number_input("D2", format="%.6f")
+    ppe = st.number_input("PPE", format="%.6f")
+
+    parkinsons_diagnosis = ""
 
     if st.button("Parkinson Result"):
+
+        input_data = [[
+            fo, fhi, flo,
+            jitter_percent, jitter_abs,
+            rap, ppq, ddp,
+            shimmer, shimmer_db,
+            apq3, apq5, apq, dda,
+            nhr, hnr,
+            rpde, dfa,
+            spread1, spread2,
+            d2, ppe
+        ]]
+
         try:
-            input_data = [[float(fo), float(fhi), float(flo),
-                           float(jitter), float(shimmer)]]
+            prediction = parkinsons_model.predict(input_data)
 
-            result = parkinsons_model.predict(input_data)
-
-            if result[0] == 1:
-                st.error("Person has Parkinsons Disease")
+            if prediction[0] == 1:
+                parkinsons_diagnosis = "The person has Parkinson's Disease"
+                st.error(parkinsons_diagnosis)
             else:
-                st.success("Person does not have Parkinsons Disease")
-        except:
-            st.warning("Enter all values correctly")
+                parkinsons_diagnosis = "The person does not have Parkinson's Disease"
+                st.success(parkinsons_diagnosis)
+
+        except Exception as e:
+            st.error(f"Prediction Error: {e}")
